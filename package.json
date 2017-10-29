@@ -1,0 +1,43 @@
+{
+  "name": "jquery-wizardify",
+  "version": "0.0.1",
+  "description": "Minimalist JQuery plugin to create simple workflows and wizards",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "qunit 'tests/*-test.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tdjones/jquery-wizardify.git"
+  },
+  "keywords": [
+    "jQuery",
+    "wizard",
+    "workflow",
+    "plugin",
+    "jquery-plugin",
+    "ecosystem:jquery"
+  ],
+  "readmeFilename": "README.md",
+  "author": "Trevor Jones",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tdjones/jquery-wizardify/issues"
+  },
+  "homepage": "https://github.com/tdjones/jquery-wizardify#readme",
+  "devDependencies": {
+    "eslint": "^4.10.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-qunit": "^2.0.0",
+    "grunt-contrib-uglify": "^3.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "jquery": "^3.2.1",
+    "qunitjs": "^2.4.1"
+  },
+  "dependencies": {}
+}

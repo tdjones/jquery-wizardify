@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit basic example</title>
+  <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture">
+    <div id='wizard'>
+        <section>
+            <h1>Section 1</h1>
+        </section>
+        <section>
+            <h1>Section 2</h1>
+        </section>
+        <section>
+            <h1>Section 3</h1>
+        </section>
+        <button type='button' class='nextButton'>Next</button>
+        <button type='button' class='backButton'>Back</button>
+    </div>
+  </div>
+  <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+  <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="../dist/jquery-wizardify.js"></script>
+  <script src="./tests.js"></script>
+  <script>
+    QUnit.test( "a basic test example", function( assert ) {
+      var value = "hello";
+      assert.equal( value, "hello", "We expect value to be hello" );
+    });
+  </script>
+</body>
+</html>
