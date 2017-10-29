@@ -25,8 +25,8 @@ module.exports = function (grunt) {
         },
         watch: {
             jshint: {
-                files: '<%= jshint.src %>',
-                tasks: ['jshint:src']
+                files: '<%= jshint.all %>',
+                tasks: ['jshint:all']
             },
             test: {
                 files: ['tests/**/*', 'src/**/*.js'],
@@ -37,7 +37,10 @@ module.exports = function (grunt) {
             }
         },
         qunit: {
-            all: ['tests/**/*.html']
+            all: ['tests/**/*.html'],
+            options: {
+                timeout: 10000
+            }
         }
     });
 
@@ -51,5 +54,7 @@ module.exports = function (grunt) {
     // Default task(s).
     grunt.registerTask('default', ['uglify']);
     grunt.registerTask('test', ['build', 'qunit']);
+    grunt.registerTask('watch-test', ['watch:test']);
+    grunt.registerTask('watch-jshint', ['watch:jshint']);
     grunt.registerTask('build', ['jshint:all', 'concat:dist', 'uglify:build']);
 };

@@ -27,44 +27,101 @@ QUnit.module('General', function (hooks) {
             });
 
             QUnit.test("next button goes to next step and runs all hooks in order", function (assert) {
-                assert.expect(8);
+                assert.expect(20);
+
                 var wizard = $('#wizard').wizardify();
-                var done = assert.async(2);
+                var done = assert.async(5);
 
-                wizard.registerStepEventHandler(0, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event) {
+                wizard.registerStepEventHandler(0, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
                     assert.step('NEXTSTEPSTARTED');
-                    return true;
+                    complete();
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function (event, complete) {
+                    assert.step('BEFORELOADING');
+                    complete();
+                });
+                wizard.registerStepEventHandler(0, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+                    $(this).hide(function () {
+                        assert.step('ANIMATIONOUT');
+                        assert.sectionVisibility('none', 1);
+                        complete();
+                        done();
+                    });
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, function (event, complete) {
+                    $(this).show(function () {
+                        assert.step('ANIMATIONIN');
+                        assert.sectionVisibility('block', 2);
+                        complete();
+                        done();
+                    });
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function (event, complete) {
+                    assert.step('AFTERLOADING');
+                    complete();
+                    $('.nextButton').click();
                 });
 
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function () {
-                    assert.step('BEFORELOADING');
+                // Transition second time
+
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
+                    assert.step('NEXTSTEPSTARTED');
+                    complete();
                 });
-                var animationWrapperOut = function () {
-                    assert.step('ANIMATIONOUT');
-                    return $.fn.fadeToggle.call(this, function () {
-                        assert.sectionVisibility('none', 1);
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.BEFORELOADING, function (event, complete) {
+                    assert.step('BEFORELOADING');
+                    complete();
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+                    $(this).hide(function () {
+                        assert.step('ANIMATIONOUT');
+                        assert.sectionVisibility('none', 2);
                         done();
-                        return true;
+                        complete();
                     });
-                };
-                var animationWrapperIn = function () {
-                    assert.step('ANIMATIONIN');
-                    return $.fn.fadeToggle.call(this, function () {
-                        assert.sectionVisibility('block', 2);
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONIN, function (event, complete) {
+                    $(this).show(function () {
+                        assert.step('ANIMATIONIN');
+                        assert.sectionVisibility('block', 3);
+                        complete();
                         done();
-                        return true;
                     });
-                };
-                wizard.registerStepEventHandler(0, $.fn.wizardify.events.ANIMATIONOUT, animationWrapperOut);
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, animationWrapperIn);
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function () {
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.AFTERLOADING, function (event, complete) {
                     assert.step('AFTERLOADING');
-                    return true;
+                    complete();
+                    $('.nextButton').click();
+                });
+
+                // Final Step
+
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
+                    assert.step('NEXTSTEPSTARTED');
+                    complete();
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHING, function (event, complete) {
+                    assert.step('FINISHING');
+                    complete();
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+                    $(this).hide(function () {
+                        assert.step('ANIMATIONOUT');
+                        assert.sectionVisibility('none', 3);
+                        complete();
+                        done();
+                    });
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHED, function (event, complete) {
+                    assert.step('FINISHED');
+                    complete();
+                    assert.verifySteps(['NEXTSTEPSTARTED', 'BEFORELOADING', 'ANIMATIONOUT', 'ANIMATIONIN', 'AFTERLOADING',
+                        'NEXTSTEPSTARTED', 'BEFORELOADING', 'ANIMATIONOUT', 'ANIMATIONIN', 'AFTERLOADING', 'NEXTSTEPSTARTED', 'FINISHING',
+                        'ANIMATIONOUT', 'FINISHED']);
                 });
 
                 wizard.start();
                 $('.nextButton').click();
-                assert.verifySteps(['NEXTSTEPSTARTED', 'BEFORELOADING','ANIMATIONOUT', 'ANIMATIONIN','AFTERLOADING']);
             });
         });
 
@@ -85,12 +142,13 @@ QUnit.module('General', function (hooks) {
                 assert.expect(3);
                 var done = assert.async();
 
-                var animationWrapper = function () {
+                var animationWrapper = function (complete) {
                     return $.fn.fadeToggle.call(this, function () {
                         assert.sectionVisibility('block', 1);
                         assert.sectionVisibility('none', 2);
                         assert.sectionVisibility('none', 3);
                         done();
+                        complete();
                     });
                 };
 
@@ -107,12 +165,13 @@ QUnit.module('General', function (hooks) {
                 assert.expect(3);
                 var done = assert.async();
 
-                var animationWrapper = function () {
+                var animationWrapper = function (complete) {
                     return $.fn.fadeToggle.call(this, function () {
                         assert.sectionVisibility('none', 1);
                         assert.sectionVisibility('none', 2);
                         assert.sectionVisibility('block', 3);
                         done();
+                        complete();
                     });
                 };
 
