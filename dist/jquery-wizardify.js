@@ -225,8 +225,12 @@
         nextStepButtonSelector: '.nextButton',
         backStepButtonSelector: '.backButton',
         namespace: 'wizardify',
-        animationIn: $.fn.show,
-        animationOut: $.fn.hide
+        animationIn: function(complete){
+            this.show(0, complete);
+        },
+        animationOut: function(complete){
+            this.hide(0, complete);
+        }
     };
 
 }(jQuery));

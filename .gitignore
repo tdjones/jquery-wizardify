@@ -4,3 +4,4 @@ node_modules
 *.patch
 .DS_Store
 package-lock.json
+.vscode
