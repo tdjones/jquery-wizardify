@@ -1,6 +1,6 @@
 {
   "name": "jquery-wizardify",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Minimalist JQuery plugin to create flexible workflows and wizards",
   "main": "index.js",
   "directories": {
