@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "qunit 'tests/*-test.js'"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",

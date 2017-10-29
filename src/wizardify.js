@@ -180,6 +180,7 @@
 
         this.start = function () {
             currentStep().show();
+            return this;
         };
 
         /**
