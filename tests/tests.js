@@ -32,15 +32,15 @@ QUnit.module('General', function (hooks) {
                 var wizard = $('#wizard').wizardify();
                 var done = assert.async(5);
 
-                wizard.registerStepEventHandler(0, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
+                wizard.registerStepEventHandler(0, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
                     assert.step('NEXTSTEPSTARTED');
                     complete();
                 });
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function (event, complete) {
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function (event, data, complete) {
                     assert.step('BEFORELOADING');
                     complete();
                 });
-                wizard.registerStepEventHandler(0, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+                wizard.registerStepEventHandler(0, $.fn.wizardify.events.ANIMATIONOUT, function (event, data, complete) {
                     $(this).hide(function () {
                         assert.step('ANIMATIONOUT');
                         assert.sectionVisibility('none', 1);
@@ -48,7 +48,7 @@ QUnit.module('General', function (hooks) {
                         done();
                     });
                 });
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, function (event, complete) {
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, function (event, data, complete) {
                     $(this).show(function () {
                         assert.step('ANIMATIONIN');
                         assert.sectionVisibility('block', 2);
@@ -56,7 +56,7 @@ QUnit.module('General', function (hooks) {
                         done();
                     });
                 });
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function (event, complete) {
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function (event, data, complete) {
                     assert.step('AFTERLOADING');
                     complete();
                     $('.nextButton').click();
@@ -64,15 +64,15 @@ QUnit.module('General', function (hooks) {
 
                 // Transition second time
 
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
                     assert.step('NEXTSTEPSTARTED');
                     complete();
                 });
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.BEFORELOADING, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.BEFORELOADING, function (event, data, complete) {
                     assert.step('BEFORELOADING');
                     complete();
                 });
-                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONOUT, function (event, data, complete) {
                     $(this).hide(function () {
                         assert.step('ANIMATIONOUT');
                         assert.sectionVisibility('none', 2);
@@ -80,7 +80,7 @@ QUnit.module('General', function (hooks) {
                         complete();
                     });
                 });
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONIN, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONIN, function (event, data, complete) {
                     $(this).show(function () {
                         assert.step('ANIMATIONIN');
                         assert.sectionVisibility('block', 3);
@@ -88,7 +88,7 @@ QUnit.module('General', function (hooks) {
                         done();
                     });
                 });
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.AFTERLOADING, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.AFTERLOADING, function (event, data, complete) {
                     assert.step('AFTERLOADING');
                     complete();
                     $('.nextButton').click();
@@ -96,15 +96,15 @@ QUnit.module('General', function (hooks) {
 
                 // Final Step
 
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
                     assert.step('NEXTSTEPSTARTED');
                     complete();
                 });
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHING, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHING, function (event, data, complete) {
                     assert.step('FINISHING');
                     complete();
                 });
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONOUT, function (event, data, complete) {
                     $(this).hide(function () {
                         assert.step('ANIMATIONOUT');
                         assert.sectionVisibility('none', 3);
@@ -112,7 +112,7 @@ QUnit.module('General', function (hooks) {
                         done();
                     });
                 });
-                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHED, function (event, complete) {
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHED, function (event, data, complete) {
                     assert.step('FINISHED');
                     complete();
                     assert.verifySteps(['NEXTSTEPSTARTED', 'BEFORELOADING', 'ANIMATIONOUT', 'ANIMATIONIN', 'AFTERLOADING',
@@ -123,6 +123,91 @@ QUnit.module('General', function (hooks) {
                 wizard.start();
                 $('.nextButton').click();
             });
+
+            QUnit.test("next button goes to next step and passes data between events", function (assert) {
+                assert.expect(20);
+
+                var wizard = $('#wizard').wizardify();
+                var done = assert.async(3);
+
+                wizard.registerStepEventHandler(0, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
+                    assert.step('NEXTSTEPSTARTED');
+                    complete('NEXTSTEPSTARTED');
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function (event, data, complete) {
+                    assert.step('BEFORELOADING');
+                    assert.equal(data, 'NEXTSTEPSTARTED');
+                    complete('BEFORELOADING');
+                });
+                wizard.registerStepEventHandler(0, $.fn.wizardify.events.ANIMATIONOUT, function (event, data, complete) {
+                    $(this).hide(function () {
+                        assert.step('ANIMATIONOUT');
+                        assert.sectionVisibility('none', 1);
+                        assert.equal(data, 'BEFORELOADING');
+                        complete('ANIMATIONOUT');
+                        done();
+                    });
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, function (event, data, complete) {
+                    $(this).show(function () {
+                        assert.step('ANIMATIONIN');
+                        assert.sectionVisibility('block', 2);
+                        assert.equal(data, 'ANIMATIONOUT');
+                        complete('ANIMATIONIN');
+                        done();
+                    });
+                });
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function (event, data, complete) {
+                    assert.step('AFTERLOADING');
+                    assert.equal(data, 'ANIMATIONIN');
+                    complete('AFTERLOADING');
+                    $('.nextButton').click();
+                });
+
+                // Transition second time
+
+                wizard.registerStepEventHandler(1, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
+                    assert.step('NEXTSTEPSTARTED');
+                    complete('NEXTSTEPSTARTED');
+                });
+                
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.AFTERLOADING, function (event, data, complete) {
+                    assert.step('AFTERLOADING');
+                    assert.equal(data, 'NEXTSTEPSTARTED');
+                    complete();
+                    $('.nextButton').click();
+                });
+
+                // Final Step
+
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
+                    assert.step('NEXTSTEPSTARTED');
+                    complete();
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHING, function (event, data, complete) {
+                    assert.step('FINISHING');
+                    complete();
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.ANIMATIONOUT, function (event, data, complete) {
+                    $(this).hide(function () {
+                        assert.step('ANIMATIONOUT');
+                        assert.sectionVisibility('none', 3);
+                        complete();
+                        done();
+                    });
+                });
+                wizard.registerStepEventHandler(2, $.fn.wizardify.events.FINISHED, function (event, data, complete) {
+                    assert.step('FINISHED');
+                    complete();
+                    assert.verifySteps(['NEXTSTEPSTARTED', 'BEFORELOADING', 'ANIMATIONOUT', 'ANIMATIONIN', 'AFTERLOADING',
+                        'NEXTSTEPSTARTED', 'AFTERLOADING', 'NEXTSTEPSTARTED', 'FINISHING',
+                        'ANIMATIONOUT', 'FINISHED']);
+                });
+
+                wizard.start();
+                $('.nextButton').click();
+            });
+
         });
 
         QUnit.module('with different options', function (hooks) {

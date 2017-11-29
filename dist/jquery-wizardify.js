@@ -87,17 +87,17 @@
          * @param {number} index Index of the step to add the handlers to.
          */
         var registerDefaultHandlers = function (index) {
-            defaultTransitionHandler = function (e, complete) {
-                complete();
+            defaultTransitionHandler = function (e, data, complete) {
+                complete(data);
             };
-            defaultAnimationInHandler = function (e, complete) {
+            defaultAnimationInHandler = function (e, data, complete) {
                 options.animationIn.call(this, function () {
-                    complete();
+                    complete(data);
                 });
             };
-            defaultAnimationOutHandler = function (e, complete) {
+            defaultAnimationOutHandler = function (e, data, complete) {
                 options.animationOut.call(this, function () {
-                    complete();
+                    complete(data);
                 });
             };
             var that = this;
@@ -115,39 +115,39 @@
                 e.preventDefault();
                 // triggerHandler will return undefined if no handler is registered and return val of handler otherwise
                 if (isLastStep()) {
-                    currentStep().triggerHandler(eventName(events.NEXTSTEPSTARTED), function() {
-                        currentStep().triggerHandler(eventName(events.FINISHING), function() {
-                            currentStep().triggerHandler(eventName(events.ANIMATIONOUT), function() {
-                                currentStep().triggerHandler(eventName(events.FINISHED), function() {
+                    currentStep().triggerHandler(eventName(events.NEXTSTEPSTARTED), [null, function(data) {
+                        currentStep().triggerHandler(eventName(events.FINISHING), [data, function(data) {
+                            currentStep().triggerHandler(eventName(events.ANIMATIONOUT), [data, function(data) {
+                                currentStep().triggerHandler(eventName(events.FINISHED), [data, function(data) {
                                     
-                                });
-                            });
-                        });
-                    });
+                                }]);
+                            }]);
+                        }]);
+                    }]);
                 } else {
-                    currentStep().triggerHandler(eventName(events.NEXTSTEPSTARTED), function () {
-                        nextStep().triggerHandler(eventName(events.BEFORELOADING), function () {
-                            currentStep().triggerHandler(eventName(events.ANIMATIONOUT), function () {
-                                nextStep().triggerHandler(eventName(events.ANIMATIONIN), function () {
-                                    nextStep().triggerHandler(eventName(events.AFTERLOADING), function () {
+                    currentStep().triggerHandler(eventName(events.NEXTSTEPSTARTED), [null, function (data) {
+                        nextStep().triggerHandler(eventName(events.BEFORELOADING), [data, function(data) {
+                            currentStep().triggerHandler(eventName(events.ANIMATIONOUT), [data, function(data) {
+                                nextStep().triggerHandler(eventName(events.ANIMATIONIN), [data, function(data) {
+                                    nextStep().triggerHandler(eventName(events.AFTERLOADING), [data, function(data) {
                                         incrementStepBy(1);
-                                    });
-                                });
-                            });
-                        });
-                    });
+                                    }]);
+                                }]);
+                            }]);
+                        }]);
+                    }]);
                 }
             });
 
             $(options.backStepButtonSelector).click(function (e) {
                 e.preventDefault();
-                currentStep().triggerHandler(eventName(events.BACKSTEPSTARTED), function () {
-                    currentStep().triggerHandler(eventName(events.ANIMATIONOUT), function () {
-                        previousStep().triggerHandler(eventName(events.ANIMATIONIN), function () {
+                currentStep().triggerHandler(eventName(events.BACKSTEPSTARTED), [null, function (data) {
+                    currentStep().triggerHandler(eventName(events.ANIMATIONOUT), [data, function (data) {
+                        previousStep().triggerHandler(eventName(events.ANIMATIONIN), [data, function (data) {
                             incrementStepBy(-1);
-                        });
-                    });
-                });
+                        }]);
+                    }]);
+                }]);
             });
         };
 
