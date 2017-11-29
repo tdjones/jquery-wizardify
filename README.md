@@ -70,23 +70,23 @@ $.fn.wizardify.events = {
 
 You can register event handlers for each event:
 ```javascript
-wizard.registerStepEventHandler(1, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, complete) {
+wizard.registerStepEventHandler(1, $.fn.wizardify.events.NEXTSTEPSTARTED, function (event, data, complete) {
    complete();
 });
-wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function (event, complete) {
+wizard.registerStepEventHandler(1, $.fn.wizardify.events.BEFORELOADING, function (event, data, complete) {
     complete();
 });
-wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONOUT, function (event, complete) {
+wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONOUT, function (event, data, complete) {
     $(this).fadeIn(function () {
         complete();
     });
 });
-wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, function (event, complete) {
+wizard.registerStepEventHandler(1, $.fn.wizardify.events.ANIMATIONIN, function (event, data, complete) {
     $(this).show(function () {
         complete();
     });
 });
-wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function (event, complete) {
+wizard.registerStepEventHandler(1, $.fn.wizardify.events.AFTERLOADING, function (event, data, complete) {
     complete();
 });
 ```
